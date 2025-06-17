@@ -64,6 +64,8 @@ CONFIG_NSS_DRV_VXLAN_ENABLE=y
 CONFIG_NSS_FIRMWARE_VERSION_12_2=y
 # CONFIG_NSS_FIRMWARE_VERSION_12_5 is not set
 CONFIG_PACKAGE_kmod-bonding=y
+CONFIG_PACKAGE_kmod-dsa=y
+CONFIG_PACKAGE_kmod-dsa-qca8k=y
 # CONFIG_PACKAGE_kmod-br-netfilter=m
 # CONFIG_PACKAGE_kmod-crypto-acompress=y
 # CONFIG_PACKAGE_kmod-crypto-blake2b=m
