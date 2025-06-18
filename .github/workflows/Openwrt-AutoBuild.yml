@@ -290,6 +290,8 @@ jobs:
         sed -i "s/# CONFIG_IB is not set/CONFIG_IB=y/" .config
         rm -rf staging_dir/toolchain-*/bin/*openwrt-linux-musl-lto-dump
         rm -rf staging_dir/toolchain-*/initial
+        cd bin/targets
+        echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
         df -hT
 
     - name: Organize files
@@ -300,11 +302,10 @@ jobs:
         cd openwrt/bin/targets/*/*
         cp $GITHUB_WORKSPACE/openwrt/.config ${{matrix.target}}.config || true
         cp $GITHUB_WORKSPACE/openwrt/build_dir/target-*/linux-*/linux-*/.config ${{matrix.target}}_kernel.config || true
-        mv -f openwrt/bin/packages/*/*/*.ipk packages
+        mv -f $FIRMWARE_PATH/*/*.ipk packages
         tar -zcf Packages.tar.gz packages
         rm -rf packages feeds.buildinfo version.buildinfo config.buildinfo profiles.json.b *.manifest kwrt-imagebuilder*
-        rm -rf openwrt/bin/targets/*/
-        echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+        rm -rf $FIRMWARE_PATH/*/
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
         echo "EMOJI=${Emoji[$[$RANDOM % ${#Emoji[@]}]]}" >> $GITHUB_ENV
 
@@ -314,7 +315,7 @@ jobs:
       with:
         name: ${{ env.VERSION }}_${{matrix.target}}
         path: |
-          openwrt/bin/targets/
+          $FIRMWARE_PATH
 
     - name: Deploy imagebuilder to server
       uses: easingthemes/ssh-deploy@main
