@@ -299,7 +299,7 @@ jobs:
       continue-on-error: true
       run: |
         shopt -s extglob
-        cd $FIRMWARE_PATH/*/*
+        cd openwrt/bin/targets/*/*/
         cp $GITHUB_WORKSPACE/openwrt/.config ${{matrix.target}}.config || true
         cp $GITHUB_WORKSPACE/openwrt/build_dir/target-*/linux-*/linux-*/.config ${{matrix.target}}_kernel.config || true
         rm -rf feeds.buildinfo version.buildinfo config.buildinfo profiles.json.b *.manifest kwrt-imagebuilder*
@@ -312,7 +312,7 @@ jobs:
       with:
         name: ${{ env.VERSION }}_${{matrix.target}}
         path: |
-          $FIRMWARE_PATH
+          openwrt/bin/targets/
 
     - name: Deploy imagebuilder to server
       uses: easingthemes/ssh-deploy@main
@@ -320,7 +320,7 @@ jobs:
       with:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         ARGS: "-avzr"
-        SOURCE: ${{ env.FIRMWARE_PATH }}/*
+        SOURCE: openwrt/bin/targets/
         REMOTE_HOST: ${{ secrets.SERVER_HOST }}
         REMOTE_PORT: ${{ secrets.SERVER_PORT }}
         REMOTE_USER: root
@@ -344,7 +344,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
-        files: ${{ env.FIRMWARE_PATH }}/*
+        files: openwrt/bin/targets/*
         name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
         tag_name: ${{ env.date }}_${{matrix.target}}
         body_path: release.txt
