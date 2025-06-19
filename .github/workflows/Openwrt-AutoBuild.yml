@@ -290,8 +290,10 @@ jobs:
         sed -i "s/# CONFIG_IB is not set/CONFIG_IB=y/" .config
         rm -rf staging_dir/toolchain-*/bin/*openwrt-linux-musl-lto-dump
         rm -rf staging_dir/toolchain-*/initial
-        cd bin/targets
-        echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+        if [ ${{matrix.target}} == "qualcommax_ipq60xx" ]; then
+          cd bin/targets/qualcommax/ipq60xx
+          echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+        fi
         df -hT
 
     - name: Organize files
