@@ -350,7 +350,7 @@ jobs:
           .${ env.FIRMWARE_PATH }}/*.itd
         name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
         body_path: release.txt
-        # tag_name: ${{ env.date }}_${{matrix.target}}
+        tag_name: ${{matrix.target}}
     
     - name: WeChat notification
       continue-on-error: true
