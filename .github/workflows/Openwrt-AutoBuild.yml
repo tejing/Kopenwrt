@@ -345,9 +345,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
         files: |
-          .${ env.FIRMWARE_PATH }}/*.bin
-          .${ env.FIRMWARE_PATH }}/*.ubi
-          .${ env.FIRMWARE_PATH }}/*.itd
+          .${ env.FIRMWARE_PATH }}/*360v6*.bin
+          .${ env.FIRMWARE_PATH }}/*360v6*.ubi
+          .${ env.FIRMWARE_PATH }}/*360v6*.itb
         name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
         body_path: release.txt
         tag_name: ${{matrix.target}}
