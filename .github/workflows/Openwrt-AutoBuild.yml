@@ -334,25 +334,27 @@ jobs:
       continue-on-error: true
       run: |
         echo -e "墙内加速下载 🚀:\n" >> release.txt
-        echo -e "[腾讯云] (https://dl.openwrt.ai/firmware/${{matrix.target}}/ ☁)\n" >> release.txt
+        echo -e " (https://github.com/tejing/Kopenwrt/tree/${{matrix.target}}/ ☁)\n" >> release.txt
         [ ${{ env.WETRANS }} ] && echo -e "[WeTransfer] (${{ env.WETRANS }} 🗽)\n" >> release.txt
         [ ${{ env.COWURL }} ] && echo -e "[奶牛上传] (${{ env.COWURL }} 🐮)\n" >> release.txt
         [ ${{ env.NOTICE }} ] && echo -e "${{ env.NOTICE }}" >> release.txt || true
 
     - name: Upload firmware for release
-      uses: softprops/action-gh-release@v2
+      uses: svenstaro/upload-release-action@v2
       continue-on-error: true
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
+        repo_token: ${{ secrets.TOKEN_KIDDIN9 }}
         files: |
           .${ env.FIRMWARE_PATH }}/*360v6*.bin
           .${ env.FIRMWARE_PATH }}/*360v6*.ubi
           .${ env.FIRMWARE_PATH }}/*360v6*.itb
         name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
-        body_path: release.txt
-        tag_name: ${{matrix.target}}
+        tag: ${{matrix.target}}
+        prerelease: true
+        #body: cat release.txt
+      #env:
+        #GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
     
     - name: WeChat notification
       continue-on-error: true
