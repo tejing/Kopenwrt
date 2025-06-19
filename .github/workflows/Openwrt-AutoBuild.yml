@@ -345,10 +345,7 @@ jobs:
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
       with:
         repo_token: ${{ secrets.TOKEN_KIDDIN9 }}
-        files: |
-          .${ env.FIRMWARE_PATH }}/*360v6*.bin
-          .${ env.FIRMWARE_PATH }}/*360v6*.ubi
-          .${ env.FIRMWARE_PATH }}/*360v6*.itb
+        files: ${ env.FIRMWARE_PATH }}/*360v6*
         name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
         tag: ${{matrix.target}}
         prerelease: true
