@@ -316,18 +316,6 @@ jobs:
         path: |
           openwrt/bin/targets/
 
-    - name: Deploy imagebuilder to server
-      uses: easingthemes/ssh-deploy@main
-      if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
-      with:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        ARGS: "-avzr"
-        SOURCE: openwrt/bin/targets/
-        REMOTE_HOST: ${{ secrets.SERVER_HOST }}
-        REMOTE_PORT: ${{ secrets.SERVER_PORT }}
-        REMOTE_USER: root
-        TARGET: "/www/wwwroot/dl.openwrt.ai/releases/tmp/"
-
     - name: Create release
       id: create_release
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
@@ -345,7 +333,7 @@ jobs:
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
       with:
         repo_token: ${{ secrets.TOKEN_KIDDIN9 }}
-        file: ${ env.FIRMWARE_PATH }}/*360v6*
+        file: openwrt/bin/targets/qualcommax/ipq60xx/*360v6*
         repo_name: ${{ env.date2 }} ${{matrix.target}}
         tag: ${{matrix.target}}
         prerelease: true
@@ -353,6 +341,18 @@ jobs:
       #env:
         #GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
     
+    - name: Deploy imagebuilder to server
+      uses: easingthemes/ssh-deploy@main
+      if: env.SSH_PRIVATE_KEY && ! contains(github.event.action, 'noser')
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-avzr"
+        SOURCE: openwrt/bin/targets/
+        REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+        REMOTE_PORT: ${{ secrets.SERVER_PORT }}
+        REMOTE_USER: root
+        TARGET: "/www/wwwroot/dl.openwrt.ai/releases/tmp/"
+
     - name: WeChat notification
       continue-on-error: true
       if: env.SCKEY
