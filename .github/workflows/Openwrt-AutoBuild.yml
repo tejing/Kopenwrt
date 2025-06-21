@@ -291,8 +291,8 @@ jobs:
         rm -rf staging_dir/toolchain-*/bin/*openwrt-linux-musl-lto-dump
         rm -rf staging_dir/toolchain-*/initial
         if [ ${{matrix.target}} == "qualcommax_ipq60xx" ]; then
-          cd bin/targets/qualcommax/ipq60xx
-          echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+          mkdir -p firmwares && find bin/targets/qualcommax/ipq60xx -type f -name '*360v6*' -exec mv -t firmwares {} +
+          echo "FIRMWARE_PATH=$PWD/firmwares" >> $GITHUB_ENV
         fi
         df -hT
 
@@ -328,18 +328,17 @@ jobs:
         [ ${{ env.NOTICE }} ] && echo -e "${{ env.NOTICE }}" >> release.txt || true
 
     - name: Upload firmware for release
-      uses: svenstaro/upload-release-action@v2
+      uses: softprops/action-gh-release@v2
       continue-on-error: true
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
-        repo_token: ${{ secrets.TOKEN_KIDDIN9 }}
-        file: openwrt/bin/targets/qualcommax/ipq60xx/*360v6*
+        files: | 
+           ${{ env.FIRMWARE_PATH }}/*
         repo_name: ${{ env.date2 }} ${{matrix.target}}
-        tag: ${{matrix.target}}
-        prerelease: true
-        #body: cat release.txt
-      #env:
-        #GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
+        tag_name: ${{matrix.target}}
+        body_path: release.txt
     
     - name: Deploy imagebuilder to server
       uses: easingthemes/ssh-deploy@main
@@ -370,7 +369,7 @@ jobs:
       continue-on-error: true
       with:
         token: ${{ secrets.TOKEN_KIDDIN9 }}
-        retain_days: 100
+        retain_days: 3
         keep_minimum_runs: 0
 
     - name: Remove old Releases
