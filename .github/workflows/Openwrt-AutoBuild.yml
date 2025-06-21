@@ -292,7 +292,7 @@ jobs:
         rm -rf staging_dir/toolchain-*/initial
         if [ ${{matrix.target}} == "qualcommax_ipq60xx" ]; then
           mkdir -p firmwares && find bin/targets/qualcommax/ipq60xx -type f -name '*360v6*' -exec mv -t firmwares {} +
-          echo "FIRMWARE_PATH=$PWD/firmwares" >> $GITHUB_ENV
+          # echo "FIRMWARE_PATH=$PWD/firmwares" >> $GITHUB_ENV
         fi
         df -hT
 
@@ -335,8 +335,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
         files: | 
-           ${{ env.FIRMWARE_PATH }}/*
-        repo_name: ${{ env.date2 }} ${{matrix.target}}
+           openwrt/firmwares/*
+        name: ${{ env.date2 }} ${{matrix.target}}
         tag_name: ${{matrix.target}}
         body_path: release.txt
     
