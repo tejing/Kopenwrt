@@ -290,10 +290,9 @@ jobs:
         sed -i "s/# CONFIG_IB is not set/CONFIG_IB=y/" .config
         rm -rf staging_dir/toolchain-*/bin/*openwrt-linux-musl-lto-dump
         rm -rf staging_dir/toolchain-*/initial
-        if [ ${{matrix.target}} == "qualcommax_ipq60xx" ]; then
-          mkdir -p firmwares && find bin/targets/qualcommax/ipq60xx -type f -name '*360v6*' -exec mv -t firmwares {} +
-          # echo "FIRMWARE_PATH=$PWD/firmwares" >> $GITHUB_ENV
-        fi
+        mkdir -p firmwares
+        mv bin/targets/*/*/{*combined*,*sysupgrade*,*factory*,*uImage*} ./firmwares/ 2>/dev/null || true
+        echo "FIRMWARE_PATH=$PWD/firmwares" >> $GITHUB_ENV
         df -hT
 
     - name: Organize files
@@ -335,7 +334,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
         files: | 
-           openwrt/firmwares/*
+           ${{ env.FIRMWARE_PATH }}/*
         name: ${{ env.date2 }} ${{matrix.target}}
         tag_name: ${{matrix.target}}
         body_path: release.txt
